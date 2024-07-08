@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>М'ячик!</title>
+</head>
+<body>
+  <h1 id="score">М'ячиків заспавнено: 1</h1>
+  <canvas id="canvas" width="800" height="800"></canvas>
+    <style>
+  #score {
+  left: 1000px;
+  top: 20px;
+  position: absolute;
+  }
+  </style>
+  <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    var Ball = function (color) {
+      this.x = 400;
+      this.y = 400;
+      this.xSpeed = Math.random() * 10 - 5;
+      this.ySpeed = Math.random() * 10 - 5;
+      this.color = color;
+    }
+
+    var colors = ["Red", "Black", "Gold", "Green", "Blue", "Purple"];
+    var score = 1;
+
+    var circle = function (x, y, radius, fillCircle, color) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+      if (fillCircle) {
+        ctx.fillStyle = color;
+        ctx.fill();
+      } else {
+        ctx.stroke();
+      }
+    }
+
+    Ball.prototype.draw = function () {
+      circle(this.x, this.y, 8, true, this.color);
+    }
+
+    Ball.prototype.move = function () {
+      this.x += this.xSpeed;
+      this.y += this.ySpeed;
+    }
+
+    Ball.prototype.checkCollision = function () {
+      if (this.x < 0 || this.x > 800) {
+        this.xSpeed = -this.xSpeed;
+      }
+      if (this.y < 0 || this.y > 800) {
+        this.ySpeed = -this.ySpeed;
+      }
+    }
+
+    var ballMassif = [];
+    ballMassif.push(new Ball(colors[Math.floor(Math.random() * colors.length)]));
+
+    setInterval(function () {
+      ctx.clearRect(0, 0, 800, 800);
+
+      for (var i = 0; i < ballMassif.length; i++) {
+        ballMassif[i].draw();
+        ballMassif[i].checkCollision();
+        ballMassif[i].move();
+      }
+
+      ctx.strokeRect(1, 1, 799, 799);
+    }, 10);
+
+    setInterval(function () {
+      score++;
+      document.getElementById("score").innerHTML = "М'ячиків заспавнено: " + score;
+      ballMassif.push(new Ball(colors[Math.floor(Math.random() * colors.length)]));
+    }, 2500);
+  </script>
+</body>
+</html>
+
